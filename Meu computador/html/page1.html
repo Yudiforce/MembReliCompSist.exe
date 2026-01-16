@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>SISTEMA TALOSSIAN - CENTRAL</title>
+    <style>
+        body { background-color: #008080; font-family: 'MS Sans Serif', Arial; margin: 20px; }
+        .window { 
+            width: 500px; background: #c0c0c0; border: 2px solid #fff; 
+            border-right-color: #808080; border-bottom-color: #808080; padding: 3px;
+        }
+        .title-bar { background: #000080; color: white; padding: 3px 10px; font-weight: bold; }
+        .content { padding: 20px; border: 1px inset #fff; background: #fff; height: 300px; overflow-y: auto; }
+        .report-item { border-bottom: 1px solid #ccc; padding: 5px; font-family: monospace; font-size: 12px; }
+        .urgent { color: red; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <div class="window">
+        <div class="title-bar">LOG_SUPERVISOR_V4.0</div>
+        <div class="content" id="relatorios">
+            <div class="report-item">> Carregando banco de dados Talossian...</div>
+        </div>
+        <div style="padding: 10px; text-align: right;">
+            <button onclick="window.location.href='setor_b.html'">Voltar para Setor B</button>
+            <button onclick="limparDados()" style="color: red;">Formatar Sistema</button>
+        </div>
+    </div>
+
+<script>
+    window.onload = function() {
+        const relatorios = document.getElementById('relatorios');
+        // Lê os dados que salvamos no Setor B
+        const progressoNico = parseInt(localStorage.getItem('progressoCrianca')) || 0;
+        const progressoEntidade = parseInt(localStorage.getItem('progressoEntidade')) || 0;
+
+        if (progressoEntidade > 0) {
+            relatorios.innerHTML += `<div class="report-item urgent">[ALERTA] Tentativa de acesso não autorizado bloqueada no Canal 04.</div>`;
+        }
+
+        if (progressoNico >= 12) {
+            relatorios.innerHTML += `
+                <div class="report-item">-----------------------------------</div>
+                <div class="report-item" style="color: blue;">[ARQUIVO FINALIZADO: CASO #04-ILYUSHA]</div>
+                <div class="report-item">Sinal civil detectado no Prédio 02.</div>
+                <div class="report-item">Status: DESCONECTADO (Nevasca atingiu nível crítico).</div>
+                <div class="report-item">Obs: O alvo abandonou a frequência às 03:00.</div>
+            `;
+        } else if (progressoNico > 0) {
+            relatorios.innerHTML += `<div class="report-item">[AVISO] Sinal de rádio doméstico em uso nas proximidades do Setor B.</div>`;
+        } else {
+            relatorios.innerHTML += `<div class="report-item">Nenhum incidente relevante detectado hoje.</div>`;
+        }
+    };
+
+    function limparDados() {
+        if(confirm("Deseja apagar todos os logs? O Nico e a Entidade voltarão do início.")) {
+            localStorage.clear();
+            window.location.reload();
+        }
+    }
+</script>
+</body>
+</html>
