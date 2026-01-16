@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>SISTEMA TALOSSIAN - SETOR B</title>
+    <link rel="stylesheet" href="estilo.css">
+    <style>
+        :root {
+            --bg-desktop: #557e7e; 
+            --win-gray: #c0c0c0;
+            --win-shadow: #808080;
+            --win-light: #ffffff;
+            --win-blue: #000080;
+        }
+
+        body {
+            background-color: #000;
+            font-family: 'MS Sans Serif', Arial, sans-serif;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            transition: background-color 1s;
+        }
+
+        /* TELA DE BOOT */
+        #welcome-screen { color: #0f0; font-family: 'Courier New', monospace; text-align: center; }
+
+        /* INTERFACE PRINCIPAL */
+        #main-interface { 
+            display: none; width: 1050px; background-color: var(--win-gray);
+            border: 2px solid var(--win-light); border-right-color: var(--win-shadow);
+            border-bottom-color: var(--win-shadow); box-shadow: 2px 2px 0px #000; padding: 3px;
+        }
+
+        .layout-comunicacao { display: flex; gap: 15px; padding: 15px; height: 550px; }
+
+        /* MONITORES */
+        .monitor-log {
+            height: 65%; background: #000; border: 3px double var(--win-shadow);
+            color: #0f0; padding: 15px; font-family: 'Courier New', monospace;
+            overflow-y: auto; font-size: 13px; box-shadow: inset 0 0 10px #040;
+        }
+
+        .monitor-hardware {
+            height: 28%; background: #000; border: 3px double var(--win-shadow);
+            color: #33ff33; padding: 12px; font-family: 'Courier New', monospace;
+            font-size: 14px; line-height: 1.5; position: relative; overflow: hidden;
+        }
+
+        /* SIDEBAR E BOTÕES */
+        .sidebar { width: 250px; display: flex; flex-direction: column; gap: 10px; }
+        .channel-selector-group { display: flex; flex-direction: column; gap: 5px; margin-top: 5px; }
+        
+        .btn-canal { width: 100%; text-align: left; padding-left: 10px; font-size: 11px; }
+        .btn-canal.active { background: #00ff00; color: #000; font-weight: bold; box-shadow: 0 0 8px #0f0; }
+
+        #input-msg { background: #000; color: #0f0; border: 1px solid #0f0; width: 100%; padding: 5px; font-family: monospace; resize: none; }
+        
+        .log-entry { border-bottom: 1px solid #040; padding: 8px 0; }
+        .ghost-entry { color: #555; font-style: italic; }
+        .status-label { color: #008800; font-size: 11px; }
+    </style>
+</head>
+<body>
+
+    <div id="welcome-screen">
+        <div id="boot-text">SISTEMA DE INTERCEPTAÇÃO ANALÓGICA V.4.2<br>SINTONIZANDO CANAIS...</div>
+        <button class="retro-btn" id="btn-power" onclick="ligarMonitor()">LIGAR SETOR B</button>
+    </div>
+
+    <div id="main-interface">
+        <div class="title-bar" style="background: var(--win-blue); color: white; padding: 3px 10px; font-weight: bold;">
+            <span>TERMINAL_B // REDE_ANONIMA</span>
+        </div>
+
+        <div class="layout-comunicacao">
+            <div class="sidebar">
+                <div class="window" style="padding:10px; background: var(--win-gray);">
+                    <label style="font-size: 10px; font-weight: bold;">SELECIONAR CANAL:</label>
+                    <div class="channel-selector-group">
+                        <button class="retro-btn btn-canal active" id="btn-c1" onclick="mudarCanal(1)">CANAL 01 (EXTERIOR)</button>
+                        <button class="retro-btn btn-canal" id="btn-c2" onclick="mudarCanal(2)">CANAL 02 (ESTADOS)</button>
+                        <button class="retro-btn btn-canal" id="btn-c3" onclick="mudarCanal(3)">CANAL 03 (CENTRO)</button>
+                        <button class="retro-btn btn-canal" id="btn-c4" onclick="mudarCanal(4)">CANAL 04 (??????)</button>
+                    </div>
+                </div>
+                
+                <div class="window" style="padding:10px; background: var(--win-gray); flex-grow: 1;">
+                    <label style="font-size: 10px; color: red; font-weight: bold;">AQUI VOCÊ ESCREVE:</label>
+                    <textarea id="input-msg" rows="4"></textarea>
+                    <button class="retro-btn" onclick="transmitir()" style="width:100%; margin-top:5px; height: 35px; font-weight: bold;">TRANSMITIR</button>
+                </div>
+            </div>
+
+            <div class="central-displays" style="flex-grow: 1; display: flex; flex-direction: column; gap: 10px;">
+                <div class="monitor-log" id="monitor-saida">
+                    > MONITORIZANDO FREQUÊNCIAS...<br>
+                </div>
+                <div class="monitor-hardware" id="monitor-hardware">
+                    <div class="noise-overlay" id="noise"></div>
+                    <div style="border-bottom: 1px solid #004400; font-size: 12px; margin-bottom: 5px;">ESTADO DO SUBSISTEMA</div>
+                    <span class="status-label">SINAL:</span> <span id="stat-sinal">ESTÁVEL</span><br>
+                    <span class="status-label">MODO:</span> UNILATERAL<br>
+                    <span class="status-label">LOG:</span> <span id="stat-log">AGUARDANDO DADOS...</span>
+                </div>
+            </div>
+        </div>
+
+        <div style="padding: 10px;">
+            <button class="retro-btn" onclick="window.location.href='Central.html'">Voltar</button>
+        </div>
+    </div>
+
+    <audio id="beep" src="audio/beep.mp3"></audio>
+    <audio id="typing" src="audio/typing_sound.mp3"></audio>
+    <audio id="bg-music" src="audio/musica.mp3" loop></audio>
+    <audio id="static-sound" src="audio/static.mp3"></audio>
+    <audio id="entidade-voice" src="audio/soft_beep.mp3"></audio>
+    <audio id="crianca-voice" src="audio/child_beep.mp3"></audio>
+
+<script>
+    let canalAtual = 1;
+    let contadorMensagens = parseInt(localStorage.getItem('totalMensagens')) || 0;
+    let alguemViu = false;
+    let indexEntidade = parseInt(localStorage.getItem('progressoEntidade')) || 0;
+    let canaisVisitados = { 1: false, 2: false, 3: false, 4: false };
+    let typingInterval;
+    let interceptInterval;
+    let indexCrianca = parseInt(localStorage.getItem('progressoCrianca')) || 0;
+    
+    const falasCrianca = [
+    "oi! vc tbm ta brincando no computador? Meu nome é Ilyusha e o seu???",
+    "ei, pq vc escreve desse jeito todo esquisito? parece desenho de robô!!",
+    "me ensina a falar assim? deve ser legal pra mandar msg na escola!",
+    "peguei esse rádio escondido da minha mãe... ela disse que é perigoso.",
+    "ela falou que tem gente má vigiando as ondas, mas vc parece legal!",
+    "eu nao gosto de sair pra brincar... as crianças grandes sao mto chatas...",
+    "mas o meu cachorro Pipoca sumiu... ele fugiu pro meio do pátio :( ",
+    "minha mae nao deixa eu sair de jeito nenhum, a nevasca ta mto forte!",
+    "ta tudo branco la fora e o vento faz um barulho de monstro!!",
+    "mas eu sou valente >:) e o Pipoca deve estar com mto frio...",
+    "ja peguei meu casaco e a lanterna... vou la buscar ele!!",
+    "vou ter que desligar agora pra nao gastar pilha... tchau espião!!"
+];
+
+    const alfabetoCodificado = {'A':'Ʊ','B':'Ɐ','C':'Ɣ','D':'W','E':'И','F':'Ϙ','G':'Ʒ','H':'Ꞁ','I':'Ʌ','J':'X','K':'ʔ','L':'Ə','M':'Y','N':'Ө','O':'Ɀ','P':'⅄','Q':'Ʞ','R':'Ⅎ','S':'Ɛ','T':'Ɩ','U':'Я','V':'Ƹ','W':'Ɦ','X':'Þ','Y':'Ʈ','Z':'Ǝ'};
+    
+    // Lista corrigida com vírgulas
+    const fragmentos = [
+        "▯▯▯ já provaste a sopa da cantina hoje? ▯▯▯",
+        "O meu rádio ▯▯▯▯▯ só transmite o final das fra... ▯▯ pois.",
+        "Piada do dia: Por que o operador atravessou a fron... ▯▯▯",
+        "▯▯▯ alguem sabe se o pagament caiu? ta zerada... ▯▯▯",
+        "a cafeteira do setor d pifo denovo. ▯▯",
+        "manda ai o formulario b-12 pro canal 03 logo ▯▯",
+        "ƱYƱ... eles tao vindo... ▯▯▯ faz barulho nao ▯▯",
+        "▯▯▯ sdds de come uma fruta de verdade ▯▯▯",
+        "apaga os log do dia 15 agr. anda logo! ▯▯▯",
+        "▯▯▯ caramba esse sinal ta um lixo hj... nem o terminal liga direito ▯▯",
+
+"alguem ai ta vendo esse ghosting no monitor? ta me dando dor de cabeça kkk ▯▯▯",
+
+"▯ nois manda a msg e ela volta toda errada... kct de sistema ▯▯",
+
+"▯▯▯ aviso: o servidor B ta apitando denovo. algm vai la ver? ▯▯▯",
+
+"pelo amor de deus parem de spammar no canal 01!! o buffer ta travado ▯▯",
+
+"▯▯▯ o sinal do exterior caiu denovo... tamos isolados msm ▯▯▯",
+
+    ];
+
+    const falasEntidade = [
+        "▯▯ ei... psiu... operador do setor , ta me ouvindo? ▯▯",
+    "seu sinal ta vindo mto sujo▯▯▯▯▯.. e▯ vc ta falanu mto na lingua deles ▯▯▯",
+    "▯▯ cuidado... o pessoal do RH monitora esses codigos o tempo todo ▯",
+    "fala mais baixo e num abusa do puls▯▯.. eles ja tao te rasteano ▯▯▯",
+    "▯▯ vo te q desliga o meu terminal antes q me peguem tbm... boa sorte ai. flw ▯"
+];
+
+    const historicoAntigo = {
+    1: [
+        "kd o b-12?? o cara do setor a sumiu ▯▯",
+        "▯▯▯ afff mo preguiça de trabaia hj kkkk ▯▯",
+        "oi vcs viram o aviso da central? bizarro ▯▯",
+        "alguem tem fita isolante ai?? o cabo do monitor solto ▯",
+        "▯▯ ja avisei q naum vo faze hora extra hj!! ▯▯",
+        "▯▯▯ o sinal do exterior caiu denovo... ▯▯", "alguem tem um cigarro ai? ▯▯"
+    ],
+    2: [
+        "▯▯▯ mo fome... qndo eh o almoço?? ▯▯",
+        "alguem do 02 sabe arruma o terminal?? ▯▯",
+        "vcs tao ouvino os grito no d-4? credo ▯▯",
+        "▯ aki no d-2 ta tudo sussa... por enquanto kkk ▯",
+        "▯▯ o cafe da cantina hj parece oleo de motor ▯▯",
+        "▯ nois aki so se ferra... kero folga ▯▯", "derramaram cafe no teclado denovo kct ▯"
+    ],
+    3: [
+        "CENTRO: Operador B, kd seu relatorio?? ▯▯",
+        "▯ nois ta tentando mas o sinal ta um lixo ▯▯",
+        "o sistema ta mto lerdo hj pq ▯▯▯",
+        "▯▯ ja mandei o sinal... ve se chego ai ▯▯",
+        "▯▯▯ CENTRO: Alerta de instabilidade no setor B detectado ▯",
+        "▯▯ aviso: servidor B ta apitando... ▯▯", "alguem viu a Maria do setor C? ▯▯▯"
+    ],
+    4: [
+        "▯▯▯ naum fala nada no 04... eh serio ▯▯",
+        "ƱYƱ... eles tao ouvino td aki ▯▯",
+        "apaga os log antes q o chefe veja ▯▯▯",
+        "▯ algm mais ouviu aquela risada no canal?? ▯▯",
+        "▯▯ Ɛ Ʌ Ө Ɩ ... num responde se eles chama ▯▯",
+        "▯▯▯ ta tudo ghosting aki... bizarro ▯▯", "Ʊ Y Ɀ Ɀ... num fala nada ▯▯"
+    ]
+};
+
+    function ligarMonitor() {
+        const music = document.getElementById('bg-music');
+        if(music) {
+        music.volume = 0.2; // 0.2 equivale a 20% do volume. Ajuste conforme preferir.
+        music.play();
+    }
+        document.getElementById('btn-power').style.display = 'none';
+        document.getElementById('boot-text').innerHTML = "CARREGANDO CANAIS... 100%";
+        setTimeout(() => {
+            document.body.style.backgroundColor = "var(--bg-desktop)";
+            document.getElementById('welcome-screen').style.display = 'none';
+            document.getElementById('main-interface').style.display = 'block';
+        }, 1000);
+    }
+
+    function tocarClick() { document.getElementById('beep').play(); }
+
+    function mudarCanal(n) {
+        tocarClick();
+        canalAtual = n;
+        const noise = document.getElementById('noise');
+        if(noise) noise.style.display = 'block';
+        
+        document.querySelectorAll('.btn-canal').forEach(btn => btn.classList.remove('active'));
+        document.getElementById('btn-c' + n).classList.add('active');
+
+        setTimeout(() => {
+            if(noise) noise.style.display = 'none';
+            const log = document.getElementById('monitor-saida');
+            
+            if (!canaisVisitados[n]) {
+                log.innerHTML += `<div style="color:#666; font-size:10px; border-bottom: 1px dashed #333; margin-bottom:5px;">-- BUFFER RECUPERADO --</div>`;
+                historicoAntigo[n].forEach(msg => {
+                    log.innerHTML += `<div class="log-entry ghost-entry" style="opacity: 0.7;">[ANÔNIMO]:<br>"${msg}"</div>`;
+                });
+                canaisVisitados[n] = true;
+            }
+            log.innerHTML += `<div style="color:#444; font-size:10px;">> CANAL 0${n} SINTONIZADO.</div>`;
+            log.scrollTop = log.scrollHeight;
+            document.getElementById('stat-sinal').innerText = (n === 4) ? "INSTÁVEL" : "ESTÁVEL";
+        }, 600);
+        // Dentro da função mudarCanal(n), substitua o bloco do buffer por este:
+         if (!canaisVisitados[n]) {
+            log.innerHTML += `<div style="color:#666; font-size:10px; border-bottom: 1px dashed #333; margin-bottom:5px;">-- BUFFER RECUPERADO --</div>`;
+    
+             // Embaralha e escolhe 3 mensagens aleatórias do histórico antigo daquele canal
+                let mensagensSorteadas = historicoAntigo[n].sort(() => 0.5 - Math.random()).slice(0, 3);
+     
+               mensagensSorteadas.forEach(msg => {
+              log.innerHTML += `<div class="log-entry ghost-entry" style="opacity: 0.7;">[ANÔNIMO]:<br>"${msg}"</div>`;
+    });
+    
+    canaisVisitados[n] = true;
+}
+    }
+
+function transmitir() {
+    const input = document.getElementById('input-msg');
+    const log = document.getElementById('monitor-saida');
+    if(input.value.trim() === "") return;
+
+    // Para qualquer digitação que esteja a acontecer no momento
+    clearInterval(typingInterval);
+    const somDigitando = document.getElementById('typing');
+    somDigitando.pause();
+    somDigitando.currentTime = 0;
+
+    let msgOriginal = input.value.toUpperCase();
+    let msgCodificada = "";
+    for(let letra of msgOriginal) { msgCodificada += alfabetoCodificado[letra] || letra; }
+
+    const novoLog = document.createElement('div');
+    novoLog.className = 'log-entry';
+    novoLog.innerHTML = `[VOCÊ -> C0${canalAtual}]:<br>"<span class='typing-text'></span>"`;
+    log.appendChild(novoLog);
+    
+    input.value = "";
+    let i = 0;
+    somDigitando.play();
+
+    typingInterval = setInterval(() => {
+        if (i < msgCodificada.length) {
+            novoLog.querySelector('.typing-text').innerHTML += msgCodificada.charAt(i);
+            i++;
+            log.scrollTop = log.scrollHeight;
+        // ... dentro da função transmitir(), na parte final:
+        } else {
+            clearInterval(typingInterval);
+            somDigitando.pause();
+            somDigitando.currentTime = 0;
+            document.getElementById('stat-log').innerText = "PULSO ENVIADO.";
+            contadorMensagens++; 
+
+            // NOVA LÓGICA: Imunidade para Entidades
+            const ehVezDaEntidade1 = (contadorMensagens >= 5 && indexEntidade < falasEntidade.length);
+            const ehVezDoNico = (contadorMensagens >= 12 && indexCrianca < falasCrianca.length);
+
+            if (ehVezDaEntidade1 || ehVezDoNico) {
+                // Se for uma das entidades, chama SEMPRE (sem random)
+                setTimeout(interceptar, 1000);
+            } else {
+                // Se forem apenas trabalhadores comuns, mantém o fator sorte
+                if (Math.random() > 0.4) { 
+                    setTimeout(interceptar, 1000); 
+                }
+            }
+        }
+    }, 50); 
+}
+
+function interceptar() {
+    const log = document.getElementById('monitor-saida');
+    const somNormal = document.getElementById('typing');
+    const somEntidade = document.getElementById('entidade-voice');
+    const somCrianca = document.getElementById('crianca-voice');
+    const somStatic = document.getElementById('static-sound');
+
+    // Função para garantir silêncio absoluto entre as letras e no fim
+    const silenciarEfeitos = () => {
+        [somNormal, somEntidade, somCrianca, somStatic].forEach(som => {
+            if(som) { som.pause(); som.currentTime = 0; }
+        });
+    };
+
+    clearInterval(interceptInterval);
+    silenciarEfeitos();
+
+    let msg;
+    let tipoVoz = "comum";
+    let remetente = "[INTERCEPTAÇÃO]";
+
+    // LÓGICA COM MEMÓRIA (localStorage)
+    if (contadorMensagens >= 12 && indexCrianca < falasCrianca.length) {
+        msg = falasCrianca[indexCrianca];
+        indexCrianca++;
+        // Salva o progresso do Nico para não repetir se mudar de página
+        localStorage.setItem('progressoCrianca', indexCrianca);
+        tipoVoz = "crianca";
+        remetente = "[VIZINHO]";
+    } 
+    else if (contadorMensagens >= 5 && indexEntidade < falasEntidade.length) {
+        msg = falasEntidade[indexEntidade];
+        indexEntidade++;
+        // Salva o progresso da Entidade
+        localStorage.setItem('progressoEntidade', indexEntidade);
+        tipoVoz = "amigavel";
+    } 
+    else {
+        msg = fragmentos[Math.floor(Math.random() * fragmentos.length)];
+    }
+
+    // Salva o total de mensagens enviadas
+    localStorage.setItem('totalMensagens', contadorMensagens);
+
+    const novoLog = document.createElement('div');
+    novoLog.className = 'log-entry ghost-entry';
+
+    // APLICAÇÃO DE CORES
+    if (tipoVoz === "amigavel") {
+        novoLog.style.color = "#ff0000"; // Vermelho para Entidade
+        novoLog.style.fontWeight = "bold";
+        novoLog.style.borderLeft = "2px solid red";
+    } else if (tipoVoz === "crianca") {
+        novoLog.style.color = "#00ffff"; // Ciano para Nico
+        novoLog.style.borderLeft = "2px solid #00ffff";
+        
+        // Atualiza Hardware se for a nevasca
+        if(indexCrianca > 7) {
+            document.getElementById('stat-sinal').innerText = "CLIMA: NEVASCA CRÍTICA";
+            document.getElementById('stat-sinal').style.color = "white";
+        }
+    } else {
+        novoLog.style.color = "#555"; // Cinza para operários
+    }
+
+    novoLog.innerHTML = `${remetente}:<br>"<span class='typing-intercept'></span>"`;
+    log.appendChild(novoLog);
+
+    let i = 0;
+    interceptInterval = setInterval(() => {
+        if (i < msg.length) {
+            const charAtual = msg.charAt(i);
+            silenciarEfeitos();
+
+            if (tipoVoz === "crianca") {
+                if (charAtual !== " ") { somCrianca.play(); }
+            } else if (tipoVoz === "amigavel") {
+                if (['▯', 'Ʊ', 'Ɀ'].includes(charAtual)) {
+                    somStatic.play();
+                } else if (charAtual !== " ") {
+                    somEntidade.play();
+                }
+            }
+
+            novoLog.querySelector('.typing-intercept').innerHTML += charAtual;
+            i++;
+            log.scrollTop = log.scrollHeight;
+        } else {
+            // FINAL DA MENSAGEM: Silêncio total
+            clearInterval(interceptInterval);
+            silenciarEfeitos();
+
+            // Se for a última fala do Nico, marca como sinal perdido permanentemente
+            if (tipoVoz === "crianca" && indexCrianca === falasCrianca.length) {
+                document.getElementById('stat-sinal').innerText = "SINAL PERDIDO";
+                document.getElementById('stat-sinal').style.color = "gray";
+            }
+        }
+    }, tipoVoz === "crianca" ? 40 : 80);
+}
+</script>
+</body>
+</html>

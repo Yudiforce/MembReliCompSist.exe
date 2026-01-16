@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>MINISTÉRIO DA ADMISSÃO - HUB CENTRAL</title>
+    <style>
+        /* CONFIGURAÇÕES VISUAIS (CSS) */
+        :root {
+            --bg-desktop: #557e7e; /* Cor clássica do fundo do Windows 95 */
+            --win-gray: #c0c0c0;   /* Cinza das janelas e botões */
+            --win-shadow: #808080; /* Cor escura para criar profundidade */
+            --win-light: #ffffff;  /* Cor branca para realces de luz */
+            --win-blue: #000080;   /* Azul escuro da barra de título */
+        }
+
+        body {
+            background-color: var(--bg-desktop);
+            font-family: 'MS Sans Serif', Arial, sans-serif;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        /* A JANELA PRINCIPAL */
+        .hub-window {
+            background-color: var(--win-gray);
+            border: 2px solid var(--win-light);
+            border-right-color: var(--win-shadow);
+            border-bottom-color: var(--win-shadow);
+            box-shadow: 2px 2px 0px #000; /* Sombra preta fina para estilo retro */
+            width: 800px;
+            padding: 3px;
+        }
+
+        /* BARRA DE TÍTULO SUPERIOR */
+        .title-bar {
+            background-color: var(--win-blue);
+            color: white;
+            padding: 3px 10px;
+            font-weight: bold;
+            font-size: 14px;
+            display: flex;
+            justify-content: space-between; /* Empurra o texto para a esquerda e o [X] para a direita */
+        }
+
+        /* CONTAINER DOS CARDS (A disposição dos setores em colunas) */
+        .sectors-container {
+            display: flex;
+            justify-content: space-around; /* Espaçamento igual entre os cards */
+            padding: 20px;
+            gap: 15px;
+        }
+
+        /* O CARD DE CADA SETOR */
+        .sector-card {
+            background: var(--win-gray);
+            width: 200px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* MOLDURA PARA A IMAGEM (Estilo monitor antigo) */
+        .image-box {
+            width: 180px;
+            height: 220px;
+            background: #000; /* Fundo preto realça imagens de terminais */
+            border: 2px solid var(--win-shadow);
+            border-right-color: var(--win-light);
+            border-bottom-color: var(--win-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .image-box img {
+            max-width: 90%; /* Garante que a imagem não saia da moldura */
+            height: auto;
+        }
+
+        /* BOTÃO RETRO (Onde o link de redirecionamento acontece) */
+        .retro-btn {
+            margin-top: 15px;
+            width: 100%;
+            padding: 8px;
+            background: var(--win-gray);
+            border: 2px solid var(--win-light);
+            border-right-color: var(--win-shadow);
+            border-bottom-color: var(--win-shadow);
+            font-family: inherit;
+            font-weight: bold;
+            cursor: pointer;
+            text-align: center;
+            text-decoration: none; /* Remove o sublinhado do link <a> */
+            color: black;
+            font-size: 12px;
+            box-sizing: border-box; /* Garante que o padding não aumente o tamanho do botão */
+        }
+
+        /* EFEITO DE CLIQUE: Inverte as bordas para parecer que o botão foi pressionado */
+        .retro-btn:active {
+            border: 2px solid var(--win-shadow);
+            border-right-color: var(--win-light);
+            border-bottom-color: var(--win-light);
+        }
+
+        .sector-label {
+            margin-top: 10px;
+            font-weight: bold;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+<audio id="click-sound" src="audio/beep.mp3" preload="auto"></audio>
+
+    <div class="hub-window">
+        <div class="title-bar">
+            <span>TERMINAL DE ACESSO AOS SETORES</span>
+        
+        </div>
+
+        <div class="sectors-container">
+            
+            <div class="sector-card">
+             <div class="image-box">
+                <img src="img/setor_a.png" alt="Setor A">
+                </div>
+                <div class="sector-label">SETOR A</div>
+                <button class="retro-btn" onclick="acessarSetor(this, 'setor_a.html')">REGISTROS</button>
+              </div>
+
+            <div class="sector-card">
+                <div class="image-box">
+                    <img src="img/setor_b.png" alt="Visual Setor B">
+                </div>
+                <div class="sector-label">SETOR B</div>
+               <button class="retro-btn" onclick="acessarSetor(this, 'setor_b.html')">COMUNICAÇÕES</button>
+            </div>
+
+            <div class="sector-card">
+                <div class="image-box">
+                    <img src="img/setor_c.png" alt="Visual Setor C">
+                </div>
+                <div class="sector-label">SETOR C</div>
+                <button class="retro-btn" onclick="acessarSetor(this, 'setor_c.html')">LOGÍSTICA</button>
+            </div>
+
+        </div>
+    </div>
+ 
+ <script> 
+function acessarSetor(elemento, url) {
+    const som = document.getElementById('click-sound');
+    
+    // 1. Efeito Visual: Simula o botão "afundado"
+    elemento.style.border = "2px solid var(--win-shadow)";
+    elemento.style.borderRightColor = "var(--win-light)";
+    elemento.style.borderBottomColor = "var(--win-light)";
+
+    // 2. Áudio: Toca o bip
+    if (som) {
+        som.play().catch(e => console.log("Áudio bloqueado pelo navegador até interação."));
+    }
+
+    // 3. Delay: Espera 500ms para o usuário ouvir o som e ver o clique
+    setTimeout(() => {
+        window.location.href = url;
+    }, 500); 
+}
+</script>
+ 
+</body>
+</html>
