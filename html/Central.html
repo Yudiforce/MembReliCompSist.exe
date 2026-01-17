@@ -16,22 +16,25 @@
 }
 
 .clock-display {
-    background: #1a1a1a;
+    /* Cor de fundo do painel (Marrom Escuro Industrial) */
+    background-color: #2A2617; 
+    
+    /* Cor do texto (Verde LED) */
     color: #00ff00; 
-    padding: 12px 24px;
-    font-family: 'Courier New', monospace;
-    font-size: 38px;
-    font-weight: bold;
-    border: 4px solid #333;
-    border-right-color: #888;
-    border-bottom-color: #888;
-    
-    /* Efeito de Matriz de LED */
-    background-image: radial-gradient(circle, #000 30%, transparent 35%);
-    background-size: 4px 4px; 
-    
-    text-shadow: 0 0 12px rgba(0, 255, 0, 0.9);
-    letter-spacing: 4px;
+
+    /* Borda externa (Simulando metal gasto) */
+    border: 4px solid #1A1710;
+    border-right-color: #4A4535; 
+    border-bottom-color: #4A4535;
+
+    /* Efeito de Brilho dos LEDs */
+    text-shadow: 
+        0 0 10px rgba(0, 255, 0, 0.7), 
+        0 0 20px rgba(0, 255, 0, 0.3);
+
+    /* O segredo da imagem: a grade de pontos */
+    background-image: radial-gradient(circle, #1A1710 35%, transparent 40%);
+    background-size: 5px 5px; 
 }
        
         :root {
@@ -224,6 +227,7 @@
 </body>
 
 </html>
+
 
 
 
