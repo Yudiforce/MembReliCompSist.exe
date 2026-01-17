@@ -16,25 +16,20 @@
 }
 
 .clock-display {
-    /* Cor de fundo do painel (Marrom Escuro Industrial) */
-    background-color: #2A2617; 
-    
-    /* Cor do texto (Verde LED) */
-    color: #00ff00; 
-
-    /* Borda externa (Simulando metal gasto) */
+    background-color: #2A2617; /* Fundo do Painel */
+    color: #00ff00; /* Verde LED */
+    padding: 12px 24px;
+    font-family: 'Courier New', monospace;
+    font-size: 38px;
+    font-weight: bold;
     border: 4px solid #1A1710;
-    border-right-color: #4A4535; 
-    border-bottom-color: #4A4535;
-
-    /* Efeito de Brilho dos LEDs */
-    text-shadow: 
-        0 0 10px rgba(0, 255, 0, 0.7), 
-        0 0 20px rgba(0, 255, 0, 0.3);
-
-    /* O segredo da imagem: a grade de pontos */
+    
+    /* Esta linha cria a grade de pontos da imagem soviética */
     background-image: radial-gradient(circle, #1A1710 35%, transparent 40%);
     background-size: 5px 5px; 
+    
+    text-shadow: 0 0 10px rgba(0, 255, 0, 0.7);
+    letter-spacing: 4px;
 }
        
         :root {
@@ -145,38 +140,35 @@
         }
     </style>
 </head>
-<body>
-
     
-<audio id="click-sound" src="audio/beep.mp3" preload="auto"></audio>
+<body>
+    <audio id="click-sound" src="audio/beep.mp3" preload="auto"></audio>
     
     <div class="hub-window" style="position: relative; margin-top: 100px;">
+        
         <div id="header-talossian">
             <div id="relogio-universal" class="clock-display">08:00:00</div>
         </div>
 
-    <div class="hub-window">
         <div class="title-bar">
             <span>TERMINAL DE ACESSO AOS SETORES</span>
-        
         </div>
 
         <div class="sectors-container">
-            
             <div class="sector-card">
-             <div class="image-box">
-                <img src="img/setor_a.png" alt="Setor A">
+                <div class="image-box">
+                    <img src="img/setor_a.png" alt="Setor A">
                 </div>
                 <div class="sector-label">SETOR A</div>
                 <button class="retro-btn" onclick="acessarSetor(this, 'setor_a.html')">REGISTROS</button>
-              </div>
+            </div>
 
             <div class="sector-card">
                 <div class="image-box">
                     <img src="img/setor_b.png" alt="Visual Setor B">
                 </div>
                 <div class="sector-label">SETOR B</div>
-               <button class="retro-btn" onclick="acessarSetor(this, 'setor_b.html')">COMUNICAÇÕES</button>
+                <button class="retro-btn" onclick="acessarSetor(this, 'setor_b.html')">COMUNICAÇÕES</button>
             </div>
 
             <div class="sector-card">
@@ -186,47 +178,34 @@
                 <div class="sector-label">SETOR C</div>
                 <button class="retro-btn" onclick="acessarSetor(this, 'setor_c.html')">LOGÍSTICA</button>
             </div>
-
         </div>
     </div>
- 
- <script src="js/engine.js"> </script>
-    
-<script src="js/engine.js"></script>
 
-<script>
-    // Escuta mudanças de tempo de outras abas para manter a Central atualizada
-    window.addEventListener('storage', (e) => {
-        if (e.key === 'talossian_time') {
-            const relogioElemento = document.getElementById('relogio-universal');
-            if (relogioElemento) {
-                // Usa a função formatarTempo que já existe no engine.js
-                relogioElemento.innerText = formatarTempo(parseInt(e.newValue));
+    <script src="js/engine.js"></script>
+    <script>
+        // Sincronização em tempo real
+        window.addEventListener('storage', (e) => {
+            if (e.key === 'talossian_time' && typeof formatarTempo === 'function') {
+                const relogioElemento = document.getElementById('relogio-universal');
+                if (relogioElemento) {
+                    relogioElemento.innerText = formatarTempo(parseInt(e.newValue));
+                }
             }
+        });
+
+        function acessarSetor(elemento, url) {
+            const som = document.getElementById('click-sound');
+            elemento.style.border = "2px solid var(--win-shadow)";
+            elemento.style.borderRightColor = "var(--win-light)";
+            elemento.style.borderBottomColor = "var(--win-light)";
+            if (som) som.play().catch(() => {});
+            setTimeout(() => { window.location.href = url; }, 500);
         }
-    });
-
-    function acessarSetor(elemento, url) {
-        const som = document.getElementById('click-sound');
-        
-        // Feedback visual de clique
-        elemento.style.border = "2px solid var(--win-shadow)";
-        elemento.style.borderRightColor = "var(--win-light)";
-        elemento.style.borderBottomColor = "var(--win-light)";
-
-        if (som) {
-            som.play().catch(() => console.log("Áudio bloqueado."));
-        }
-
-        setTimeout(() => {
-            window.location.href = url;
-        }, 500); 
-    }
-</script>
- 
+    </script>
 </body>
 
 </html>
+
 
 
 
