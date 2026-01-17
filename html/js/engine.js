@@ -38,21 +38,29 @@ function atualizarInterface() {
 }
 
 // O MOTOR DO TEMPO (Roda apenas na Central para não duplicar a velocidade)
-if (window.location.pathname.includes('central.html')) {
+// Ajuste para 1 segundo real = 1 minuto de jogo
+const VELOCIDADE_TEMPO = 1000; // 1000ms = 1 segundo real
+
+if (window.location.pathname.includes('Central.html')) {
     setInterval(() => {
         let tempo = parseInt(localStorage.getItem('talossian_time'));
         let credito = parseInt(localStorage.getItem('credito_social'));
         
-        // Passa o tempo e cobra o "oxigênio"
-        tempo += 1;
-        credito -= CUSTO_OXIGENIO;
+        // Cada vez que o código roda (1s), passa 1 minuto no jogo
+        tempo += 1; 
         
+        // O custo de oxigênio/crédito pode ser cobrado a cada "hora" de jogo
+        if (tempo % 60 === 0) {
+            credito -= 5; // Perde 5 de crédito a cada 1 hora de jogo (1 min real)
+            console.log("Custo de socialização cobrado pela Talossian.");
+        }
+
         localStorage.setItem('talossian_time', tempo);
         localStorage.setItem('credito_social', Math.max(0, credito));
         
         atualizarInterface();
         
-        // Verificação de Game Over Silencioso
+        // Game Over Silencioso
         if (credito <= 0) {
             window.location.href = "game_over.html"; 
         }
@@ -65,4 +73,5 @@ window.addEventListener('storage', (e) => {
 });
 
 // Inicia ao carregar a página
+
 window.onload = inicializarSistema;
