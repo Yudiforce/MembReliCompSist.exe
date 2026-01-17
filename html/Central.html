@@ -16,34 +16,22 @@
 }
 
 .clock-display {
-    background: #2a2a2a; /* Fundo cinza escuro de painel */
+    background: #1a1a1a;
     color: #00ff00; 
-    padding: 15px 25px;
+    padding: 12px 24px;
     font-family: 'Courier New', monospace;
-    font-size: 42px;
+    font-size: 38px;
     font-weight: bold;
-    border: 4px solid #1a1a1a;
-    border-right-color: #4a4a4a;
-    border-bottom-color: #4a4a4a;
+    border: 4px solid #333;
+    border-right-color: #888;
+    border-bottom-color: #888;
     
-    /* Efeito de Matriz de Pontos */
-    text-shadow: 
-        2px 2px 0px #1a1a1a, /* Sombra para profundidade */
-        0 0 10px rgba(0, 255, 0, 0.8); /* Brilho do LED */
+    /* Efeito de Matriz de LED */
+    background-image: radial-gradient(circle, #000 30%, transparent 35%);
+    background-size: 4px 4px; 
     
-    letter-spacing: 5px;
-    position: relative;
-    overflow: hidden;
-}
-
-/* Adiciona uma textura de grade/pontos por cima do relógio */
-.clock-display::before {
-    content: "";
-    position: absolute;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background-image: radial-gradient(circle, rgba(0,0,0,0.5) 1px, transparent 1px);
-    background-size: 3px 3px; /* Tamanho dos "pontos" da matriz */
-    pointer-events: none;
+    text-shadow: 0 0 12px rgba(0, 255, 0, 0.9);
+    letter-spacing: 4px;
 }
        
         :root {
@@ -236,6 +224,7 @@
 </body>
 
 </html>
+
 
 
 
