@@ -6,32 +6,41 @@
     <style>
         /* CONFIGURAÇÕES VISUAIS (CSS) */ 
         
-/* Estilo do Relógio e Header Talossian */
+/* Container que centraliza o header no topo */
 #header-talossian {
-    position: absolute;
-    top: 10px;
-    width: 800px;
+    position: fixed; /* Fixa no topo da tela, ignorando o scroll */
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%); /* Centraliza perfeitamente */
     display: flex;
-    justify-content: space-between;
+    flex-direction: column;
     align-items: center;
-    font-family: 'Courier New', Courier, monospace;
-    color: #00ff00; /* Verde Tóxico */
-    text-shadow: 0 0 5px #00ff00;
+    gap: 10px;
+    z-index: 999; /* Garante que fique acima de tudo */
 }
 
+/* O Relógio Estilo Digital */
 .clock-display {
     background: #000;
-    padding: 5px 15px;
-    border: 2px solid var(--win-shadow);
-    border-right-color: var(--win-light);
-    border-bottom-color: var(--win-light);
-    font-size: 20px;
+    color: #00ff00; /* Verde fósforo */
+    padding: 10px 20px;
+    font-family: 'Courier New', monospace;
+    font-size: 28px;
     font-weight: bold;
+    border: 3px solid #808080;
+    border-right-color: #ffffff;
+    border-bottom-color: #ffffff;
+    box-shadow: inset 2px 2px 5px rgba(0,255,0,0.2); /* Brilho interno */
+    text-shadow: 0 0 8px #00ff00;
 }
 
+/* Texto de Versão do Sistema */
 .status-box {
+    color: #00ff00;
+    font-family: 'Courier New', monospace;
     font-size: 12px;
-    letter-spacing: 1px;
+    text-transform: uppercase;
+    text-shadow: 0 0 3px #00ff00;
 }
         
         :root {
@@ -144,7 +153,6 @@
 </head>
 <body>
 
-<span id="relogio-universal">08:00</span>
     
 <audio id="click-sound" src="audio/beep.mp3" preload="auto"></audio>
     
@@ -225,6 +233,7 @@ function acessarSetor(elemento, url) {
 </body>
 
 </html>
+
 
 
 
