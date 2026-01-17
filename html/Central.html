@@ -4,218 +4,166 @@
     <meta charset="UTF-8">
     <title>MINISTÉRIO DA ADMISSÃO - HUB CENTRAL</title>
     <style>
-        /* CONFIGURAÇÕES VISUAIS (CSS) */ 
-        
-#header-talossian {
-    position: absolute;
-    top: -95px; /* Ajuste para flutuar acima da barra azul */
-    left: 50%;
-    transform: translateX(-50%);
-    z-index: 1000;
-    filter: drop-shadow(0 0 10px rgba(0,0,0,0.5));
-}
+    :root {
+        --bg-desktop: #557e7e;
+        --win-gray: #c0c0c0;
+        --win-shadow: #808080;
+        --win-light: #ffffff;
+        --win-blue: #000080;
+    }
 
-.clock-display {
-    background-color: #5E4B32; /* Fundo do Painel */
-    color: #FFB000;
-    padding: 12px 24px;
-    font-family: 'Courier New', monospace;
-    font-size: 38px;
-    font-weight: bold;
-    border: 4px solid #1A1710;
-    
-    /* Esta linha cria a grade de pontos da imagem soviética */
-    background-image: radial-gradient(circle, #1A1710 35%, transparent 40%);
-    background-size: 5px 5px; 
-    
-    text-shadow: 
-        0 0 10px rgba(255, 176, 0, 0.7), 
-        0 0 20px rgba(255, 176, 0, 0.3);
-    
-    letter-spacing: 4px;
-}
-       
-        :root {
-            --bg-desktop: #557e7e; /* Cor clássica do fundo do Windows 95 */
-            --win-gray: #c0c0c0;   /* Cinza das janelas e botões */
-            --win-shadow: #808080; /* Cor escura para criar profundidade */
-            --win-light: #ffffff;  /* Cor branca para realces de luz */
-            --win-blue: #000080;   /* Azul escuro da barra de título */
-        }
+    body {
+        background-color: var(--bg-desktop);
+        font-family: 'MS Sans Serif', Arial, sans-serif;
+        margin: 0;
+        height: 100vh;
+        overflow: hidden; /* Impede barras de rolagem no desktop */
+    }
 
-        body {
-            background-color: var(--bg-desktop);
-            font-family: 'MS Sans Serif', Arial, sans-serif;
-            margin: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
+    /* Relógio Central */
+    #header-talossian {
+        position: absolute;
+        top: 20px;
+        left: 50%;
+        transform: translateX(-50%);
+        z-index: 10;
+    }
 
-        /* A JANELA PRINCIPAL */
-        .hub-window {
-            background-color: var(--win-gray);
-            border: 2px solid var(--win-light);
-            border-right-color: var(--win-shadow);
-            border-bottom-color: var(--win-shadow);
-            box-shadow: 2px 2px 0px #000; /* Sombra preta fina para estilo retro */
-            width: 800px;
-            padding: 3px;
-        }
+    .clock-display {
+        background-color: #5E4B32; 
+        color: #FFB000;
+        padding: 10px 20px;
+        font-family: 'Courier New', monospace;
+        font-size: 32px;
+        font-weight: bold;
+        border: 4px solid #1A1710;
+        background-image: radial-gradient(circle, rgba(0,0,0,0.5) 30%, transparent 35%);
+        background-size: 4px 4px; 
+        text-shadow: 0 0 10px #FFB000;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.5);
+    }
 
+    /* Janelas Estilo Win95 */
+    .hub-window {
+        background-color: var(--win-gray);
+        border: 2px solid var(--win-light);
+        border-right-color: var(--win-shadow);
+        border-bottom-color: var(--win-shadow);
+        box-shadow: 2px 2px 0px #000;
+        padding: 2px;
+        position: absolute; /* Necessário para mover */
+    }
 
-        /* BARRA DE TÍTULO SUPERIOR */
-        .title-bar {
-            background-color: var(--win-blue);
-            color: white;
-            padding: 3px 10px;
-            font-weight: bold;
-            font-size: 14px;
-            display: flex;
-            justify-content: space-between; /* Empurra o texto para a esquerda e o [X] para a direita */
-        }
+    .title-bar {
+        background-color: var(--win-blue);
+        color: white;
+        padding: 3px 10px;
+        font-weight: bold;
+        font-size: 12px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        user-select: none;
+    }
 
-        /* CONTAINER DOS CARDS (A disposição dos setores em colunas) */
-        .sectors-container {
-            display: flex;
-            justify-content: space-around; /* Espaçamento igual entre os cards */
-            padding: 20px;
-            gap: 15px;
-        }
+    /* Atalhos (Ícones na parte inferior como na sua imagem) */
+    .desktop-shortcuts {
+        position: absolute;
+        bottom: 50px;
+        left: 50%;
+        transform: translateX(-50%);
+        background: var(--win-gray);
+        border: 2px solid var(--win-light);
+        border-right-color: var(--win-shadow);
+        border-bottom-color: var(--win-shadow);
+        display: flex;
+        gap: 20px;
+        padding: 10px;
+    }
 
-        /* O CARD DE CADA SETOR */
-        .sector-card {
-            background: var(--win-gray);
-            width: 200px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
+    .shortcut {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        cursor: pointer;
+        width: 100px;
+    }
 
-        /* MOLDURA PARA A IMAGEM (Estilo monitor antigo) */
-        .image-box {
-            width: 180px;
-            height: 220px;
-            background: #000; /* Fundo preto realça imagens de terminais */
-            border: 2px solid var(--win-shadow);
-            border-right-color: var(--win-light);
-            border-bottom-color: var(--win-light);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
+    .shortcut img { width: 32px; height: 32px; margin-bottom: 5px; }
+    .shortcut span { font-size: 10px; text-align: center; background: #fff; border: 1px solid #808080; padding: 1px 3px; }
 
-        .image-box img {
-            max-width: 90%; /* Garante que a imagem não saia da moldura */
-            height: auto;
-        }
+    /* Botões */
+    .retro-btn {
+        background: var(--win-gray);
+        border: 2px solid var(--win-light);
+        border-right-color: var(--win-shadow);
+        border-bottom-color: var(--win-shadow);
+        font-family: inherit;
+        font-weight: bold;
+        cursor: pointer;
+        font-size: 11px;
+    }
 
-        /* BOTÃO RETRO (Onde o link de redirecionamento acontece) */
-        .retro-btn {
-            margin-top: 15px;
-            width: 100%;
-            padding: 8px;
-            background: var(--win-gray);
-            border: 2px solid var(--win-light);
-            border-right-color: var(--win-shadow);
-            border-bottom-color: var(--win-shadow);
-            font-family: inherit;
-            font-weight: bold;
-            cursor: pointer;
-            text-align: center;
-            text-decoration: none; /* Remove o sublinhado do link <a> */
-            color: black;
-            font-size: 12px;
-            box-sizing: border-box; /* Garante que o padding não aumente o tamanho do botão */
-        }
-
-        /* EFEITO DE CLIQUE: Inverte as bordas para parecer que o botão foi pressionado */
-        .retro-btn:active {
-            border: 2px solid var(--win-shadow);
-            border-right-color: var(--win-light);
-            border-bottom-color: var(--win-light);
-        }
-
-        .sector-label {
-            margin-top: 10px;
-            font-weight: bold;
-            font-size: 14px;
-        }
-    </style>
+    .retro-btn:active {
+        border: 2px solid var(--win-shadow);
+        border-right-color: var(--win-light);
+        border-bottom-color: var(--win-light);
+    }
+</style>
 </head>
     
 <body>
     <audio id="click-sound" src="audio/beep.mp3" preload="auto"></audio>
-    
-    <div class="hub-window" style="position: relative; margin-top: 100px;">
-        
-        <div id="header-talossian">
-            <div id="relogio-universal" class="clock-display">08:00:00</div>
+
+    <div id="header-talossian">
+        <div id="relogio-universal" class="clock-display">08:00:00</div>
+    </div>
+
+    <div class="hub-window" style="top: 120px; left: 50%; transform: translateX(-50%); width: 700px;">
+        <div class="title-bar"><span>TERMINAL DE ACESSO AOS SETORES</span></div>
+        <div style="display: flex; justify-content: space-around; padding: 20px;">
+            <div style="text-align:center">
+                <div style="width:150px; height:150px; background:#000; border:2px inset #fff;"><img src="img/setor_a.png" style="max-width:100%"></div>
+                <button class="retro-btn" style="width:100%; margin-top:5px" onclick="acessarSetor(this, 'setor_a.html')">SETOR A</button>
+            </div>
+            </div>
+    </div>
+
+    <div class="desktop-shortcuts">
+        <div class="shortcut" onclick="abrirManual()">
+            <img src="img/icon_folder.png" alt="folder">
+            <span>MANUAL_OPERADOR.EXE</span>
         </div>
-
-        <div class="title-bar">
-            <span>TERMINAL DE ACESSO AOS SETORES</span>
-        </div>
-
-        <div class="sectors-container">
-            <div class="sector-card">
-                <div class="image-box">
-                    <img src="img/setor_a.png" alt="Setor A">
-                </div>
-                <div class="sector-label">SETOR A</div>
-                <button class="retro-btn" onclick="acessarSetor(this, 'setor_a.html')">REGISTROS</button>
-            </div>
-
-        <div style="padding: 5px; border-bottom: 1px solid var(--win-shadow);">
-    <button class="retro-btn" style="width: auto; padding: 2px 10px;" onclick="abrirManual()">
-        📁 MANUAL_OPERADOR.EXE
-    </button>
-</div>
-            
-            <div class="sector-card">
-                <div class="image-box">
-                    <img src="img/setor_b.png" alt="Visual Setor B">
-                </div>
-                <div class="sector-label">SETOR B</div>
-                <button class="retro-btn" onclick="acessarSetor(this, 'setor_b.html')">COMUNICAÇÕES</button>
-            </div>
-
-            <div class="sector-card">
-                <div class="image-box">
-                    <img src="img/setor_c.png" alt="Visual Setor C">
-                </div>
-                <div class="sector-label">SETOR C</div>
-                <button class="retro-btn" onclick="acessarSetor(this, 'setor_c.html')">LOGÍSTICA</button>
-            </div>
+        <div class="shortcut">
+            <img src="img/icon_folder.png" alt="folder">
+            <span>LEIA_ISTO_OU_MORRA</span>
         </div>
     </div>
 
-    
-    <div id="manual-window" class="hub-window" style="display: none; position: absolute; top: 150px; left: 100px; width: 320px; z-index: 2000; cursor: default;">
-    <div id="manual-header" class="title-bar" style="cursor: move;">
-        <span>MANUAL_OPERADOR.EXE</span>
-        <button onclick="fecharManual()" style="cursor:pointer;">[X]</button>
-    </div>
-    
-    <div id="conteudo-manual" style="padding: 10px; display: flex; flex-direction: column; align-items: center; background: #c0c0c0;">
-        <div id="capa-manual" style="text-align: center;">
-            <img src="img/capa_manual.png" alt="Capa Manual" style="width: 280px; border: 2px solid #000; margin-bottom: 10px;">
-            <button class="retro-btn" onclick="mostrarTextoManual()">LER INSTRUÇÕES</button>
+    <div id="manual-window" class="hub-window" style="display: none; top: 100px; left: 50px; width: 300px; z-index: 100;">
+        <div id="manual-header" class="title-bar" style="cursor: move;">
+            <span>MANUAL_OPERADOR.EXE</span>
+            <button onclick="fecharManual()">[X]</button>
         </div>
-
-        <div id="texto-manual" style="display: none; background: white; padding: 10px; border: 2px inset #808080; height: 300px; overflow-y: auto; font-family: 'Times New Roman', serif;">
-            <h3 style="text-align:center;">DIRETRIZES DO MINISTÉRIO</h3>
-            <p><strong>LEPRA:</strong> Identifique tosses e manchas. Erros custam oxigênio.</p>
-            <p><strong>SOCIALIZAÇÃO:</strong> Falar com o veterano no Setor B recupera créditos.</p>
-            <button class="retro-btn" style="margin-top: 10px;" onclick="voltarParaCapa()">VOLTAR</button>
+        <div id="conteudo-manual" style="padding: 10px; text-align: center;">
+            <div id="capa-manual">
+                <img src="img/capa_manual.png" style="width: 100%; border: 1px solid #000;">
+                <button class="retro-btn" style="margin-top:10px" onclick="mostrarTextoManual()">LER INSTRUÇÕES</button>
+            </div>
+            <div id="texto-manual" style="display:none; background:#fff; text-align:left; padding:10px; height:200px; overflow-y:auto;">
+                <p>Diretrizes da Talossian...</p>
+                <button class="retro-btn" onclick="voltarParaCapa()">VOLTAR</button>
+            </div>
         </div>
     </div>
-</div>
 
     <script src="js/engine.js"></script>
     <script>
-        // Sincronização em tempo real
+<audio id="click-sound" src="audio/beep.mp3" preload="auto"></audio>
+
+    <script src="js/engine.js"></script>
+    <script>
+        // 1. SINCRONIZAÇÃO DO RELÓGIO E INTERFACE
         window.addEventListener('storage', (e) => {
             if (e.key === 'talossian_time' && typeof formatarTempo === 'function') {
                 const relogioElemento = document.getElementById('relogio-universal');
@@ -225,67 +173,100 @@
             }
         });
 
+        // 2. SONS DE CLIQUE GLOBAIS (Configuração Automática)
+        document.addEventListener('click', function (e) {
+            // Verifica se o elemento clicado é um botão ou um atalho de pasta
+            if (e.target.tagName === 'BUTTON' || e.target.closest('.retro-btn') || e.target.closest('.shortcut')) {
+                const som = document.getElementById('click-sound');
+                if (som) {
+                    som.currentTime = 0; // Reinicia para permitir cliques rápidos
+                    som.play().catch(() => console.log("Interação necessária para áudio."));
+                }
+            }
+        }, false);
+
+        // 3. LOGÍSTICA DE ACESSO AOS SETORES
         function acessarSetor(elemento, url) {
-            const som = document.getElementById('click-sound');
+            // Efeito visual de clique imediato
             elemento.style.border = "2px solid var(--win-shadow)";
             elemento.style.borderRightColor = "var(--win-light)";
             elemento.style.borderBottomColor = "var(--win-light)";
-            if (som) som.play().catch(() => {});
-            setTimeout(() => { window.location.href = url; }, 500);
+
+            setTimeout(() => {
+                window.location.href = url;
+            }, 400); 
         }
 
-        
-        // Funções de Navegação do Manual
-function abrirManual() { document.getElementById('manual-window').style.display = 'block'; }
-function fecharManual() { document.getElementById('manual-window').style.display = 'none'; }
-function mostrarTextoManual() {
-    document.getElementById('capa-manual').style.display = 'none';
-    document.getElementById('texto-manual').style.display = 'block';
-}
-function voltarParaCapa() {
-    document.getElementById('capa-manual').style.display = 'block';
-    document.getElementById('texto-manual').style.display = 'none';
-}
+        // 4. CONTROLO DO MANUAL (Navegação entre Capa e Texto)
+        function abrirManual() { 
+            const win = document.getElementById('manual-window');
+            win.style.display = 'block';
+            // Garante que o manual abre sempre na frente
+            win.style.zIndex = "3000"; 
+        }
 
-// Lógica para Arrastar a Janela (Drag and Drop)
-dragElement(document.getElementById("manual-window"));
+        function fecharManual() { 
+            document.getElementById('manual-window').style.display = 'none'; 
+        }
 
-function dragElement(elmnt) {
-  var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
-  if (document.getElementById(elmnt.id + "header")) {
-    document.getElementById(elmnt.id + "header").onmousedown = dragMouseDown;
-  }
+        function mostrarTextoManual() {
+            document.getElementById('capa-manual').style.display = 'none';
+            document.getElementById('texto-manual').style.display = 'block';
+        }
 
-  function dragMouseDown(e) {
-    e = e || window.event;
-    e.preventDefault();
-    pos3 = e.clientX;
-    pos4 = e.clientY;
-    document.onmouseup = closeDragElement;
-    document.onmousemove = elementDrag;
-  }
+        function voltarParaCapa() {
+            document.getElementById('capa-manual').style.display = 'block';
+            document.getElementById('texto-manual').style.display = 'none';
+        }
 
-  function elementDrag(e) {
-    e = e || window.event;
-    e.preventDefault();
-    pos1 = pos3 - e.clientX;
-    pos2 = pos4 - e.clientY;
-    pos3 = e.clientX;
-    pos4 = e.clientY;
-    elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
-    elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
-  }
+        // 5. LÓGICA DE MOVIMENTAÇÃO (Drag and Drop)
+        // Aplicado ao ID da janela, mas puxado pelo ID do cabeçalho
+        dragElement(document.getElementById("manual-window"));
 
-  function closeDragElement() {
-    document.onmouseup = null;
-    document.onmousemove = null;
-  }
-}
-        
+        function dragElement(elmnt) {
+            if (!elmnt) return;
+            
+            var pos1 = 0, pos2 = 0, pos3 = 0, pos4 = 0;
+            // O cabeçalho deve ter o ID: manual-header
+            const header = document.getElementById("manual-header");
+            
+            if (header) {
+                header.onmousedown = dragMouseDown;
+            }
+
+            function dragMouseDown(e) {
+                e = e || window.event;
+                e.preventDefault();
+                // Posição inicial do rato
+                pos3 = e.clientX;
+                pos4 = e.clientY;
+                document.onmouseup = closeDragElement;
+                document.onmousemove = elementDrag;
+            }
+
+            function elementDrag(e) {
+                e = e || window.event;
+                e.preventDefault();
+                // Calcular deslocamento
+                pos1 = pos3 - e.clientX;
+                pos2 = pos4 - e.clientY;
+                pos3 = e.clientX;
+                pos4 = e.clientY;
+                // Definir nova posição do elemento
+                elmnt.style.top = (elmnt.offsetTop - pos2) + "px";
+                elmnt.style.left = (elmnt.offsetLeft - pos1) + "px";
+            }
+
+            function closeDragElement() {
+                // Para de mover quando o botão do rato é solto
+                document.onmouseup = null;
+                document.onmousemove = null;
+            }
+        }
     </script>
 </body>
-
 </html>
+
 
 
 
