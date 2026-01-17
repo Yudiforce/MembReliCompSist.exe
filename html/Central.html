@@ -115,6 +115,11 @@
 </head>
 <body>
 <audio id="click-sound" src="audio/beep.mp3" preload="auto"></audio>
+    
+    <div id="header-talossian">
+    <div class="status-box">SISTEMA OPERACIONAL TALOSSIAN V.1.09</div>
+    <div id="relogio-universal" class="clock-display">08:00</div>
+</div>
 
     <div class="hub-window">
         <div class="title-bar">
@@ -151,7 +156,19 @@
         </div>
     </div>
  
- <script> 
+ <script>
+     
+     window.addEventListener('storage', (e) => {
+    if (e.key === 'talossian_time') {
+        const relogioElemento = document.getElementById('relogio-universal');
+        if (relogioElemento) {
+            relogioElemento.innerText = formatarTempo(parseInt(e.newValue));
+        }
+        // Se o tempo mudou, as barras de status também podem precisar atualizar
+        atualizarBarrasVisuais(); 
+    }
+});
+     
 function acessarSetor(elemento, url) {
     const som = document.getElementById('click-sound');
     
@@ -173,4 +190,5 @@ function acessarSetor(elemento, url) {
 </script>
  
 </body>
+
 </html>
