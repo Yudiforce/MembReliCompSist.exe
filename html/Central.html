@@ -6,43 +6,31 @@
     <style>
         /* CONFIGURAÇÕES VISUAIS (CSS) */ 
         
-/* Container que centraliza o header no topo */
 #header-talossian {
-    position: fixed; /* Fixa no topo da tela, ignorando o scroll */
-    top: 20px;
+    position: absolute; /* Muda para absolute para alinhar com o fluxo do hub */
+    top: -80px;         /* Move o relógio para cima da janela azul */
     left: 50%;
-    transform: translateX(-50%); /* Centraliza perfeitamente */
+    transform: translateX(-50%);
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 10px;
-    z-index: 999; /* Garante que fique acima de tudo */
+    z-index: 1000;
 }
 
-/* O Relógio Estilo Digital */
 .clock-display {
     background: #000;
-    color: #00ff00; /* Verde fósforo */
-    padding: 10px 20px;
+    color: #00ff00; 
+    padding: 8px 15px;
     font-family: 'Courier New', monospace;
-    font-size: 28px;
+    font-size: 32px; /* Aumentado para destaque */
     font-weight: bold;
     border: 3px solid #808080;
     border-right-color: #ffffff;
     border-bottom-color: #ffffff;
-    box-shadow: inset 2px 2px 5px rgba(0,255,0,0.2); /* Brilho interno */
-    text-shadow: 0 0 8px #00ff00;
+    box-shadow: 0 0 15px rgba(0, 255, 0, 0.3); /* Brilho de monitor antigo */
+    text-shadow: 0 0 5px #00ff00;
 }
-
-/* Texto de Versão do Sistema */
-.status-box {
-    color: #00ff00;
-    font-family: 'Courier New', monospace;
-    font-size: 12px;
-    text-transform: uppercase;
-    text-shadow: 0 0 3px #00ff00;
-}
-        
+       
         :root {
             --bg-desktop: #557e7e; /* Cor clássica do fundo do Windows 95 */
             --win-gray: #c0c0c0;   /* Cinza das janelas e botões */
@@ -157,7 +145,6 @@
 <audio id="click-sound" src="audio/beep.mp3" preload="auto"></audio>
     
     <div id="header-talossian">
-    <div class="status-box">SISTEMA OPERACIONAL TALOSSIAN V.1.09</div>
     <div id="relogio-universal" class="clock-display">08:00</div>
 </div>
 
@@ -233,6 +220,7 @@ function acessarSetor(elemento, url) {
 </body>
 
 </html>
+
 
 
 
