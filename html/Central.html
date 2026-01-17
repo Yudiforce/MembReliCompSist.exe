@@ -201,41 +201,42 @@
  
  <script src="js/engine.js"> </script>
     
-     <script>
-     window.addEventListener('storage', (e) => {
-    if (e.key === 'talossian_time') {
-        const relogioElemento = document.getElementById('relogio-universal');
-        if (relogioElemento) {
-            relogioElemento.innerText = formatarTempo(parseInt(e.newValue));
+<script src="js/engine.js"></script>
+
+<script>
+    // Escuta mudanças de tempo de outras abas para manter a Central atualizada
+    window.addEventListener('storage', (e) => {
+        if (e.key === 'talossian_time') {
+            const relogioElemento = document.getElementById('relogio-universal');
+            if (relogioElemento) {
+                // Usa a função formatarTempo que já existe no engine.js
+                relogioElemento.innerText = formatarTempo(parseInt(e.newValue));
+            }
         }
-        // Se o tempo mudou, as barras de status também podem precisar atualizar
-        atualizarBarrasVisuais(); 
-    }
-});
-     
-function acessarSetor(elemento, url) {
-    const som = document.getElementById('click-sound');
-    
-    // 1. Efeito Visual: Simula o botão "afundado"
-    elemento.style.border = "2px solid var(--win-shadow)";
-    elemento.style.borderRightColor = "var(--win-light)";
-    elemento.style.borderBottomColor = "var(--win-light)";
+    });
 
-    // 2. Áudio: Toca o bip
-    if (som) {
-        som.play().catch(e => console.log("Áudio bloqueado pelo navegador até interação."));
-    }
+    function acessarSetor(elemento, url) {
+        const som = document.getElementById('click-sound');
+        
+        // Feedback visual de clique
+        elemento.style.border = "2px solid var(--win-shadow)";
+        elemento.style.borderRightColor = "var(--win-light)";
+        elemento.style.borderBottomColor = "var(--win-light)";
 
-    // 3. Delay: Espera 500ms para o usuário ouvir o som e ver o clique
-    setTimeout(() => {
-        window.location.href = url;
-    }, 500); 
-}
+        if (som) {
+            som.play().catch(() => console.log("Áudio bloqueado."));
+        }
+
+        setTimeout(() => {
+            window.location.href = url;
+        }, 500); 
+    }
 </script>
  
 </body>
 
 </html>
+
 
 
 
